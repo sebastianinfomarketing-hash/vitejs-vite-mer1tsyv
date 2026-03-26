@@ -20,7 +20,9 @@ import {
   Settings,
   X,
   Save,
+  Instagram,
 } from 'lucide-react';
+import InstagramAnalyzer from './components/InstagramAnalyzer';
 
 // Firebase Imports
 import { initializeApp } from 'firebase/app';
@@ -184,6 +186,7 @@ const db = getFirestore(app);
 const appId = typeof __app_id !== 'undefined' ? __app_id : 'fitness-calc-v4';
 
 export default function App() {
+  const [activeSection, setActiveSection] = useState<'routine' | 'instagram'>('routine');
   const [user, setUser] = useState(null);
   const [daysPerWeek, setDaysPerWeek] = useState(3);
   const [activeDay, setActiveDay] = useState(0);
@@ -452,6 +455,36 @@ export default function App() {
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900 font-sans p-2 sm:p-4 pb-20">
       <div className="max-w-6xl mx-auto">
+        {/* Section navigation */}
+        <div className="flex items-center gap-2 mb-3 px-1">
+          <button
+            onClick={() => setActiveSection('routine')}
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-xl font-bold text-xs uppercase tracking-wider transition-all ${
+              activeSection === 'routine'
+                ? 'bg-slate-800 text-white shadow'
+                : 'bg-white text-slate-500 border border-slate-200 hover:bg-slate-50'
+            }`}
+          >
+            <Dumbbell size={14} /> Entrenamiento
+          </button>
+          <button
+            onClick={() => setActiveSection('instagram')}
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-xl font-bold text-xs uppercase tracking-wider transition-all ${
+              activeSection === 'instagram'
+                ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow'
+                : 'bg-white text-slate-500 border border-slate-200 hover:bg-slate-50'
+            }`}
+          >
+            <Instagram size={14} /> Instagram Analyzer
+          </button>
+        </div>
+
+        {/* Instagram Analyzer section */}
+        {activeSection === 'instagram' && <InstagramAnalyzer />}
+
+        {/* Routine section */}
+        {activeSection === 'routine' && <>
+
         {/* Cloud Sync Status */}
         <div className="flex justify-end mb-1 h-5 px-2">
           {syncStatus === 'saving' && (
@@ -951,6 +984,7 @@ export default function App() {
             </div>
           </div>
         )}
+        </> /* end routine section */}
       </div>
     </div>
   );
