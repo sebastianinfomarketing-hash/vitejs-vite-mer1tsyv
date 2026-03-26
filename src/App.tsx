@@ -20,7 +20,9 @@ import {
   Settings,
   X,
   Save,
+  Bot,
 } from 'lucide-react';
+import AIAssistant from './components/AIAssistant';
 
 // Firebase Imports
 import { initializeApp } from 'firebase/app';
@@ -191,6 +193,9 @@ export default function App() {
   const [recoveryType, setRecoveryType] = useState('standard');
   const [syncStatus, setSyncStatus] = useState('idle');
   const [customExercises, setCustomExercises] = useState([]);
+
+  // Estado para el asistente IA
+  const [showAI, setShowAI] = useState(false);
 
   // Estados para el Modal de Crear Ejercicio
   const [showCreator, setShowCreator] = useState(false);
@@ -539,6 +544,12 @@ export default function App() {
 
               <div className="flex flex-col gap-2 justify-center">
                 <button
+                  onClick={() => setShowAI(true)}
+                  className="bg-slate-800 hover:bg-slate-900 text-white px-5 py-3 rounded-2xl text-[10px] font-black transition-all shadow-lg flex items-center gap-2 uppercase tracking-wider"
+                >
+                  <Bot size={16} /> Coach IA
+                </button>
+                <button
                   onClick={exportToCSV}
                   className="bg-green-600 hover:bg-green-700 text-white px-5 py-3 rounded-2xl text-[10px] font-black transition-all shadow-lg flex items-center gap-2 uppercase tracking-wider"
                 >
@@ -861,6 +872,20 @@ export default function App() {
             </div>
           </div>
         </div>
+
+        {/* Asistente IA */}
+        {showAI && (
+          <AIAssistant
+            onClose={() => setShowAI(false)}
+            context={{
+              profile,
+              daysPerWeek,
+              recoveryType,
+              weeklyTotals,
+              dailyRoutines,
+            }}
+          />
+        )}
 
         {/* Modal Creador de Ejercicios */}
         {showCreator && (
