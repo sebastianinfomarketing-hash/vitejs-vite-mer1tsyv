@@ -1,5 +1,7 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
+const fs = require('fs');
 const { listProfileVideos, downloadAudio, cleanupFile } = require('./services/instagram');
 const { transcribeAudio } = require('./services/transcription');
 const { analyzeScript } = require('./services/analysis');
@@ -116,6 +118,16 @@ app.post('/api/analyze-transcript', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Instagram Analyzer API running on http://localhost:${PORT}`);
+// Serve built frontend from dist/
+const distPath = path.join(__dirname, '..', 'dist');
+if (fs.existsSync(distPath)) {
+  app.use(express.static(distPath));
+  app.get('*', (_req, res) => {
+    res.sendFile(path.join(distPath, 'index.html'));
+  });
+  console.log(`Serving frontend from ${distPath}`);
+}
+
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`App running on http://0.0.0.0:${PORT}`);
 });
